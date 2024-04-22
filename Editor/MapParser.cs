@@ -56,21 +56,26 @@ namespace Qunity
             scope = ParseScope.FILE;
 
             var file = new StreamReader(filename);
-
-            while (!file.EndOfStream)
+            try
             {
-                string line = file.ReadLine();
-                if (line.StartsWith("//")) continue; // is a comment.
-
-                List<string> tokens = CustomSplit(line);
-                for (int i = 0; i < tokens.Count; i++)
+                while (!file.EndOfStream)
                 {
-                    ParseToken(tokens[i]);
+                    string line = file.ReadLine();
+                    if (line.StartsWith("//")) continue; // is a comment.
+
+                    List<string> tokens = CustomSplit(line);
+                    for (int i = 0; i < tokens.Count; i++)
+                    {
+                        ParseToken(tokens[i]);
+                    }
                 }
+                file.Close();
             }
-
-            Debug.Log("Map parsed: entities " + mapData.entities.Count.ToString());
-
+            catch (Exception e)
+            {
+                file.Close();
+                throw e;
+            }
             return true;
         }
 

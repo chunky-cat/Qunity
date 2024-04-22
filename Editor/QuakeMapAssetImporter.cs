@@ -53,13 +53,13 @@ namespace Qunity
             generateTextureMaterials();
 
             var levelObj = loadLevelGeometry(ctx);
-
-            foreach (var ent in mapData.entities)
-            {
-                Debug.Log(ent.properties["classname"]);
-                Debug.Log(ent.brushes.Count);
-            }
-
+            /*
+                        foreach (var ent in mapData.entities)
+                        {
+                            Debug.Log(ent.properties["classname"]);
+                            Debug.Log(ent.brushes.Count);
+                        }
+            */
         }
 
         private GameObject loadLevelGeometry(AssetImportContext ctx)
