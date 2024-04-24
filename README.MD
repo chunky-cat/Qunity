@@ -40,12 +40,8 @@ https://github.com/chunky-cat/com.chunkycat.qunity.git
 <img src="https://github.com/chunky-cat/com.chunkycat.qunity/blob/main/.docs/tutorial_images/tb_prefs.png?raw=true" alt="tb new" width="60%" height=60%/>
 
 * Create a new `Generic` map and use the `Valve` format (Standard should also work tho).
-<br>
-<img src="https://github.com/chunky-cat/com.chunkycat.qunity/blob/main/.docs/tutorial_images/tb_new.png?raw=true" alt="tb new" width="60%" height=60%/>
 
 the default `Generic` gameconfig searches for a folder named `textures` in the game path (your Assets folder).
 Place all your mapping textures in there to make them available in Trenchbroom. This is also the default folder Qunity will use to create materials.
 
 NOTE: currently, only png files are supported, this will be extended in the near future.
-
-
