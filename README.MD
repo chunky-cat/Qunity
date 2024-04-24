@@ -2,9 +2,9 @@
 
 # Qunity
 ## quake map importer for Unity
-<center>
+<p align="center">
 <img src="https://github.com/chunky-cat/com.chunkycat.qunity/blob/main/.docs/demo.gif?raw=true" alt="tb new" width="60%" height=60%/>
-</center>
+</p>
 
 Supported Unity Versions:
 * 2021.x
