@@ -1,7 +1,7 @@
 ![QUNITY](https://github.com/chunky-cat/com.chunkycat.qunity/blob/main/.docs/logo.png?raw=true)
 
 # Qunity
-## quake map importer for Unity based on [Qodot/func_godot](https://github.com/func-godot/func_godot_plugin)
+## quake map importer for Unity based on [Qodot / FuncGodot](https://github.com/func-godot/func_godot_plugin)
 <p align="center">
 <img src="https://github.com/chunky-cat/com.chunkycat.qunity/blob/main/.docs/demo.gif?raw=true" alt="tb new" width="60%" height=60%/>
 </p>
@@ -20,7 +20,7 @@ Supported Render Pipelines:
 ### What it is
 Qunity is a Unity package for importing Quake maps made with Trenchbroom etc.
 The package also comes with a Quake WAD importer to remove the need for extracting textures.
-It is heavily based on [Qodot/func_godot](https://github.com/func-godot/func_godot_plugin), a Godot plugin for working with quake maps. 
+It is heavily based on [Qodot / FuncGodot](https://github.com/func-godot/func_godot_plugin), a Godot plugin for working with quake maps. 
 
 ### Why is it experimental
 Qunity is in a pretty early stage and is in active development. But the base functionality should work as expected.
@@ -51,6 +51,8 @@ Place all your mapping textures in there to make them available in Trenchbroom. 
 NOTE: currently, only png files are supported, this will be extended in the near future.
 
 ## Credits
+
+Qunity is a port of Qodot / FuncGodot for Unity.
 
 FuncGodot was created by [Hannah "EMBYR" Crawford](https://embyr.sh/), [Emberlynn Bland](https://github.com/deertears/), and [Tim "RhapsodyInGeek" Maccabe](https://github.com/RhapsodyInGeek), reworked from the [Godot 4 port of Qodot](https://github.com/QodotPlugin/Qodot/tree/main) by Embyr, with contributions from members of the FuncGodot, Qodot, Godot, and Quake Mapping Communities.
 
