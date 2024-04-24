@@ -3,7 +3,7 @@ using UnityEditor;
 using Qunity;
 
 [CustomEditor(typeof(QuakeMapAssetImporter))]
-public class HelpBoxDrawer : Editor
+public class QuakeMapImporterInspector : Editor
 {
     public override void OnInspectorGUI()
     {

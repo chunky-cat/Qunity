@@ -48,8 +48,6 @@ https://github.com/chunky-cat/com.chunkycat.qunity.git
 the default `Generic` gameconfig searches for a folder named `textures` in the game path (your Assets folder).
 Place all your mapping textures in there to make them available in Trenchbroom. This is also the default folder Qunity will use to create materials.
 
-NOTE: currently, only png files are supported, this will be extended in the near future.
-
 ## Credits
 
 Qunity is a port of Qodot / FuncGodot for Unity.

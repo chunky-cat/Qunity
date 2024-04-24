@@ -50,6 +50,7 @@ namespace Qunity
 
         [HideInInspector]
         public bool warnTexturesReimported;
+        [HideInInspector]
         public bool warnTexturesMissing;
 
         [Header("Entities")]
@@ -235,6 +236,7 @@ namespace Qunity
 
         private void generateTextureMaterials(AssetImportContext ctx)
         {
+            warnTexturesReimported = false;
             for (int i = 0; i < mapData.textures.Count; i++)
             {
                 var qtex = mapData.textures[i];
@@ -251,7 +253,7 @@ namespace Qunity
                     tex.filterMode = FilterMode.Point;
                     bool hasTransparancy = false;
                     Color chroma = new Color32(0x9f, 0x5b, 0x53, 0xFF);
-                    warnTexturesReimported = false;
+
                     if (tex.isReadable)
                     {
                         for (int h = 0; h < tex.height; h++)
@@ -276,7 +278,7 @@ namespace Qunity
                     else
                     {
                         warnTexturesReimported = true;
-                        var path = string.Format("{0}/{1}.png", textureFolder, qtex.name);
+                        var path = getTextureAssetPath(qtex.name);
                         Debug.Log("reimporting texture: " + path + "; please reimport map");
                         TextureProcessor.ReimportTexture(path);
                     }
@@ -307,9 +309,10 @@ namespace Qunity
 
         private void ReimporTextures()
         {
-            string[] files = Directory.GetFiles(textureFolder, "*.png", SearchOption.TopDirectoryOnly);
-            foreach (var path in files)
+            string[] guids = AssetDatabase.FindAssets(name + " t:texture2D", new[] { textureFolder });
+            foreach (var guid in guids)
             {
+                var path = AssetDatabase.GUIDToAssetPath(guids[0]);
                 TextureProcessor.ReimportTexture(path);
             }
         }
@@ -383,8 +386,18 @@ namespace Qunity
                 }
                 return null;
             }
-            var path = string.Format("{0}/{1}.png", textureFolder, texName);
+            var path = getTextureAssetPath(texName);
             return (Texture2D)AssetDatabase.LoadAssetAtPath(path, typeof(Texture2D));
+        }
+
+        private string getTextureAssetPath(string name)
+        {
+            string[] guids = AssetDatabase.FindAssets(name + " t:texture2D", new[] { textureFolder });
+            if (guids.Length > 0)
+            {
+                return AssetDatabase.GUIDToAssetPath(guids[0]);
+            }
+            return "";
         }
     }
 }
