@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System;
 using System.IO;
 using UnityEngine.Rendering;
+using System.Collections;
 
 namespace Qunity
 {
@@ -41,8 +42,11 @@ namespace Qunity
         public bool setupTextures;
 
         [Header("Materials")]
-        public Material baseMaterial;
-        public Material alphaCutoutMaterial;
+        public Material baseMaterialOverride;
+        public Material alphaCutoutMaterialOverride;
+        private Material baseMaterial;
+        private Material alphaCutoutMaterial;
+        public string BaseColorShaderParam = "_MainTex";
 
 
 
@@ -101,9 +105,12 @@ namespace Qunity
                 if (tmpClasses[className] != null)
                 {
                     var instance = pe.SetupPrefab(ent);
-                    ctx.AddObjectToAsset(className, instance);
-                    instance.transform.position /= inverseScale;
-                    instance.transform.parent = levelObj.transform;
+                    if (instance != null)
+                    {
+                        ctx.AddObjectToAsset(className, instance);
+                        instance.transform.position /= inverseScale;
+                        instance.transform.parent = levelObj.transform;
+                    }
                 }
             }
         }
@@ -247,13 +254,22 @@ namespace Qunity
                                 c.a = 0;
                                 tex.SetPixel(w, h, c);
                             }
+                            if (c.a == 0)
+                            {
+                                hasTransparancy = true;
+                            }
                         }
                     }
                     tex.Apply();
-                    var mat = hasTransparancy ? baseMaterial : alphaCutoutMaterial;
+
+                    var mat = baseMaterial;
+                    if (hasTransparancy)
+                    {
+                        mat = alphaCutoutMaterial;
+                    }
                     var newMat = new Material(mat);
                     m_materialDict[qtex.name] = newMat;
-                    newMat.SetTexture("_BaseMap", tex);
+                    newMat.SetTexture(BaseColorShaderParam, tex);
                     newMat.name = qtex.name;
                 }
                 else
@@ -279,19 +295,42 @@ namespace Qunity
 
         private void getBaseMaterial()
         {
+            var baseMat = baseMaterialOverride;
+            var alphaMat = alphaCutoutMaterialOverride;
+
             var pipeline = "Base";
-            switch (GraphicsSettings.renderPipelineAsset.GetType().Name)
+            if (GraphicsSettings.renderPipelineAsset != null)
             {
-                case "UniversalRenderPipelineAsset":
-                    pipeline = "URP"; break;
+                switch (GraphicsSettings.renderPipelineAsset.GetType().Name)
+                {
+                    case "UniversalRenderPipelineAsset":
+                        {
+                            pipeline = "URP";
+                            BaseColorShaderParam = "_BaseMap";
+                            break;
+                        }
+                    case "HDRenderPipelineAsset":
+                        {
+                            pipeline = "HDRP";
+                            BaseColorShaderParam = "_BaseColorMap";
+                            break;
+                        }
+                }
             }
 
-            baseMaterial = (Material)AssetDatabase.LoadAssetAtPath(internalMatFolder + pipeline + "/Base.mat", typeof(Material));
-            alphaCutoutMaterial = (Material)AssetDatabase.LoadAssetAtPath(internalMatFolder + pipeline + "/Alpha.mat", typeof(Material));
-            if (alphaCutoutMaterial == null)
+            if (baseMat == null)
             {
-                alphaCutoutMaterial = baseMaterial;
+                baseMaterial = (Material)AssetDatabase.LoadAssetAtPath(internalMatFolder + pipeline + "/Base.mat", typeof(Material));
             }
+            if (alphaMat == null)
+            {
+                alphaCutoutMaterial = (Material)AssetDatabase.LoadAssetAtPath(internalMatFolder + pipeline + "/Alpha.mat", typeof(Material));
+                if (alphaCutoutMaterial == null)
+                {
+                    alphaCutoutMaterial = baseMaterial;
+                }
+            }
+
         }
 
         private Texture2D findTexture(string texName)
