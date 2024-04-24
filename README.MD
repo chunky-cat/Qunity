@@ -22,13 +22,28 @@ The package also comes with a Quake WAD importer to remove the need for extracti
 Qunity is in a pretty early stage and is in active development. But the base functionality should work as expected.
 Please file an issue if you run into problems. :-)
 
-### How to install:
+
+## Instructions
+
+#### How to install:
 
 you can install it via Unity's [package manager via gitURL](https://docs.unity3d.com/Manual/upm-ui-giturl.html):
 ```
 https://github.com/chunky-cat/com.chunkycat.qunity.git
 ```
 
-### Instructions:
 
-TODO
+#### Setup Trenchbroom for Qunity:
+
+* click on `open preferences...` and set the game path for the 
+![](https://github.com/chunky-cat/com.chunkycat.qunity/blob/main/.docs/tutorial_images/tb_prefs.png?raw=true)
+
+* Create a new `Generic` map and use the `Valve` format (Standard should also work tho).
+![](https://github.com/chunky-cat/com.chunkycat.qunity/blob/main/.docs/tutorial_images/tb_new.png?raw=true)
+
+the default `Generic` gameconfig searches for a folder named `textures` in the game path (your Assets folder).
+Place all your mapping textures in there to make them available in Trenchbroom. This is also the default folder Qunity will use to create materials.
+
+NOTE: currently, only png files are supported, this will be extended in the near future.
+
+
