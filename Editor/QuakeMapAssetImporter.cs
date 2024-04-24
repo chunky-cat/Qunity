@@ -48,7 +48,9 @@ namespace Qunity
         private Material alphaCutoutMaterial;
         public string BaseColorShaderParam = "_MainTex";
 
-
+        [HideInInspector]
+        public bool warnTexturesReimported;
+        public bool warnTexturesMissing;
 
         [Header("Entities")]
         public List<PointEntity> pointEntities = new List<PointEntity>();
@@ -125,6 +127,12 @@ namespace Qunity
                 }
             }
             return null;
+        }
+
+        private void OnGUI()
+
+        {
+            EditorGUILayout.HelpBox("Some warning text", MessageType.Warning);
         }
 
         private GameObject loadLevelGeometry(AssetImportContext ctx)
@@ -243,6 +251,7 @@ namespace Qunity
                     tex.filterMode = FilterMode.Point;
                     bool hasTransparancy = false;
                     Color chroma = new Color32(0x9f, 0x5b, 0x53, 0xFF);
+                    warnTexturesReimported = false;
                     if (tex.isReadable)
                     {
                         for (int h = 0; h < tex.height; h++)
@@ -266,6 +275,7 @@ namespace Qunity
                     }
                     else
                     {
+                        warnTexturesReimported = true;
                         var path = string.Format("{0}/{1}.png", textureFolder, qtex.name);
                         Debug.Log("reimporting texture: " + path + "; please reimport map");
                         TextureProcessor.ReimportTexture(path);
@@ -286,6 +296,7 @@ namespace Qunity
                 {
                     var newMat = new Material(baseMaterial);
                     m_materialDict[qtex.name] = newMat;
+                    warnTexturesMissing = true;
                     Debug.LogError("cannot find texture: " + qtex.name);
                     return;
                 }
