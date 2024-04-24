@@ -3,7 +3,7 @@
 # Qunity
 ## quake map importer for Unity
 <center>
-![DEMO](https://github.com/chunky-cat/com.chunkycat.qunity/blob/main/.docs/demo.gif?raw=true)
+<img src="https://github.com/chunky-cat/com.chunkycat.qunity/blob/main/.docs/demo.gif?raw=true" alt="tb new" width="60%" height=60%/>
 </center>
 
 Supported Unity Versions:
