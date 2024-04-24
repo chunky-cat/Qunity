@@ -243,24 +243,34 @@ namespace Qunity
                     tex.filterMode = FilterMode.Point;
                     bool hasTransparancy = false;
                     Color chroma = new Color32(0x9f, 0x5b, 0x53, 0xFF);
-                    for (int h = 0; h < tex.height; h++)
+                    if (tex.isReadable)
                     {
-                        for (int w = 0; w < tex.width; w++)
+                        for (int h = 0; h < tex.height; h++)
                         {
-                            var c = tex.GetPixel(w, h);
-                            if (c == chroma)
+                            for (int w = 0; w < tex.width; w++)
                             {
-                                hasTransparancy = true;
-                                c.a = 0;
-                                tex.SetPixel(w, h, c);
-                            }
-                            if (c.a == 0)
-                            {
-                                hasTransparancy = true;
+                                var c = tex.GetPixel(w, h);
+                                if (c == chroma)
+                                {
+                                    hasTransparancy = true;
+                                    c.a = 0;
+                                    tex.SetPixel(w, h, c);
+                                }
+                                if (c.a == 0)
+                                {
+                                    hasTransparancy = true;
+                                }
                             }
                         }
+                        tex.Apply();
                     }
-                    tex.Apply();
+                    else
+                    {
+                        var path = string.Format("{0}/{1}.png", textureFolder, qtex.name);
+                        Debug.Log("reimporting texture: " + path + "; please reimport map");
+                        TextureProcessor.ReimportTexture(path);
+                    }
+
 
                     var mat = baseMaterial;
                     if (hasTransparancy)
