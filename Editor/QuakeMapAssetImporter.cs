@@ -3,16 +3,18 @@ using UnityEditor;
 using UnityEngine;
 using System.Collections.Generic;
 using System;
+using System.IO;
+using UnityEngine.Rendering;
 
 namespace Qunity
 {
-
     /// <summary>
     /// Import any files with the .map extension
     /// </summary>
     [ScriptedImporter(1, "map", AllowCaching = true)]
     public sealed class QuakeMapAssetImporter : ScriptedImporter
     {
+        const string internalMatFolder = "Packages/com.chunkycat.qunity/Assets/Materials/";
         private MapData mapData;
         private MapParser mapParser;
         private GeoGenerator geoGenerator;
@@ -26,13 +28,26 @@ namespace Qunity
         public float lightmapTexelSize = 1;
         public float lightmapUVPackMargin = 1.5f;
 
-        [Header("Special Texutre Names")]
+        [Header("Textures")]
         public string clipTextureName = "_clip";
         public string skipTextureName = "_skip";
 
-        [Header("Folders")]
-
+        [Space(5)]
+        public string wadFolder = "Assets/wads";
         public string textureFolder = "Assets/textures";
+
+        [Space(5)]
+        [InspectorButton("ReimporTextures")]
+        public bool setupTextures;
+
+        [Header("Materials")]
+        public Material baseMaterial;
+        public Material alphaCutoutMaterial;
+
+
+
+        [Header("Entities")]
+        public List<PointEntity> pointEntities = new List<PointEntity>();
 
         public QuakeMapAssetImporter()
         {
@@ -44,29 +59,71 @@ namespace Qunity
 
         public override void OnImportAsset(AssetImportContext ctx)
         {
+            wadFolder = wadFolder.TrimEnd('/');
+            textureFolder = textureFolder.TrimEnd('/');
+
+            if (baseMaterial == null)
+            {
+                getBaseMaterial();
+            }
+
             if (ctx.assetPath.Contains("autosave/"))
             {
                 return;
             }
 
             mapParser.Load(ctx.assetPath);
-            generateTextureMaterials();
 
+            generateTextureMaterials(ctx);
             var levelObj = loadLevelGeometry(ctx);
-            /*
-                        foreach (var ent in mapData.entities)
-                        {
-                            Debug.Log(ent.properties["classname"]);
-                            Debug.Log(ent.brushes.Count);
-                        }
-            */
+
+
+            var tmpClasses = new Dictionary<string, PointEntity>();
+            foreach (var ent in mapData.entities)
+            {
+                var className = ent.properties["classname"];
+                if (className == "worldspawn") { continue; }
+                PointEntity pe = null;
+                if (!tmpClasses.ContainsKey(className))
+                {
+                    pe = findPointEntity(className);
+                    if (pe == null)
+                    {
+                        pe = new PointEntity { className = className };
+                        pointEntities.Add(pe);
+                    }
+                    tmpClasses[className] = pe;
+                }
+                else
+                {
+                    pe = tmpClasses[className];
+                }
+                if (tmpClasses[className] != null)
+                {
+                    var instance = pe.SetupPrefab(ent);
+                    ctx.AddObjectToAsset(className, instance);
+                    instance.transform.position /= inverseScale;
+                    instance.transform.parent = levelObj.transform;
+                }
+            }
+        }
+
+        private PointEntity findPointEntity(string name)
+        {
+            foreach (var pe in pointEntities)
+            {
+                if (pe.className == name)
+                {
+                    return pe;
+                }
+            }
+            return null;
         }
 
         private GameObject loadLevelGeometry(AssetImportContext ctx)
         {
             var meshes = generateMeshes();
             var level = new GameObject("Level");
-            level.isStatic = true;
 
             var mr = level.AddComponent<MeshRenderer>();
             var mf = level.AddComponent<MeshFilter>();
@@ -95,13 +152,13 @@ namespace Qunity
 
             var uParam = new UnwrapParam();
             UnwrapParam.SetDefaults(out uParam);
-            Debug.Log(string.Format("uparam.packMargin: {0}", uParam.packMargin));
             uParam.packMargin = lightmapUVPackMargin;
             Unwrapping.GenerateSecondaryUVSet(mesh, uParam);
 
-            ctx.AddObjectToAsset("WorldSpawn", mesh);
+            ctx.AddObjectToAsset("mesh", mesh);
             ctx.AddObjectToAsset("Level", level);
             ctx.SetMainObject(level);
+            level.isStatic = true;
             return level;
         }
 
@@ -161,9 +218,8 @@ namespace Qunity
             return surfsArray;
         }
 
-        private void generateTextureMaterials()
+        private void generateTextureMaterials(AssetImportContext ctx)
         {
-            var mat = (Material)AssetDatabase.LoadAssetAtPath("Packages/com.chunkycat.qunity/Assets/Materials/Default.mat", typeof(Material));
             for (int i = 0; i < mapData.textures.Count; i++)
             {
                 var qtex = mapData.textures[i];
@@ -172,19 +228,103 @@ namespace Qunity
                     continue;
                 }
 
-                var path = string.Format("{0}/{1}.png", textureFolder, qtex.name);
-                var tex = (Texture2D)AssetDatabase.LoadAssetAtPath(path, typeof(Texture2D));
-                tex.filterMode = FilterMode.Point;
-                qtex.width = tex.width;
-                qtex.height = tex.height;
+                var tex = findTexture(qtex.name);
+                if (tex != null)
+                {
+                    qtex.width = tex.width;
+                    qtex.height = tex.height;
+                    tex.filterMode = FilterMode.Point;
+                    bool hasTransparancy = false;
+                    Color chroma = new Color32(0x9f, 0x5b, 0x53, 0xFF);
+                    for (int h = 0; h < tex.height; h++)
+                    {
+                        for (int w = 0; w < tex.width; w++)
+                        {
+                            var c = tex.GetPixel(w, h);
+                            if (c == chroma)
+                            {
+                                hasTransparancy = true;
+                                c.a = 0;
+                                tex.SetPixel(w, h, c);
+                            }
+                        }
+                    }
+                    tex.Apply();
+                    var mat = hasTransparancy ? baseMaterial : alphaCutoutMaterial;
+                    var newMat = new Material(mat);
+                    m_materialDict[qtex.name] = newMat;
+                    newMat.SetTexture("_BaseMap", tex);
+                    newMat.name = qtex.name;
+                }
+                else
+                {
+                    var newMat = new Material(baseMaterial);
+                    m_materialDict[qtex.name] = newMat;
+                    Debug.LogError("cannot find texture: " + qtex.name);
+                    return;
+                }
 
-                var newMat = new Material(mat);
-                newMat.SetTexture("_BaseMap", tex);
-                newMat.name = qtex.name;
-                m_materialDict[qtex.name] = newMat;
                 mapData.textures[i] = qtex;
             }
+        }
 
+        private void ReimporTextures()
+        {
+            string[] files = Directory.GetFiles(textureFolder, "*.png", SearchOption.TopDirectoryOnly);
+            foreach (var path in files)
+            {
+                TextureProcessor.ReimportTexture(path);
+            }
+        }
+
+        private void getBaseMaterial()
+        {
+            var pipeline = "Base";
+            switch (GraphicsSettings.renderPipelineAsset.GetType().Name)
+            {
+                case "UniversalRenderPipelineAsset":
+                    pipeline = "URP"; break;
+            }
+
+            baseMaterial = (Material)AssetDatabase.LoadAssetAtPath(internalMatFolder + pipeline + "/Base.mat", typeof(Material));
+            alphaCutoutMaterial = (Material)AssetDatabase.LoadAssetAtPath(internalMatFolder + pipeline + "/Alpha.mat", typeof(Material));
+            if (alphaCutoutMaterial == null)
+            {
+                alphaCutoutMaterial = baseMaterial;
+            }
+        }
+
+        private Texture2D findTexture(string texName)
+        {
+            var baseDir = "Assets";
+            if (mapData.entities[0].properties.ContainsKey("wad"))
+            {
+                var wads = mapData.entities[0].properties["wad"].Split(';');
+                foreach (var wpath in wads)
+                {
+                    var currentBasedir = wadFolder;
+                    if (wpath.Contains("/"))
+                    {
+                        currentBasedir = baseDir;
+                    }
+
+
+                    WadTexture2DCollection wad = (WadTexture2DCollection)AssetDatabase.LoadAssetAtPath(currentBasedir + "/" + wpath, typeof(WadTexture2DCollection));
+                    if (wad == null)
+                    {
+                        Debug.LogError("could not open wad: " + currentBasedir + "/" + wpath);
+                        continue;
+                    }
+                    var tex = wad.FindTexture(texName);
+                    if (tex != null)
+                    {
+                        return tex;
+                    }
+                }
+                return null;
+            }
+            var path = string.Format("{0}/{1}.png", textureFolder, texName);
+            return (Texture2D)AssetDatabase.LoadAssetAtPath(path, typeof(Texture2D));
         }
     }
 }

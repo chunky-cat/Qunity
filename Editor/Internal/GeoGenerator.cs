@@ -428,8 +428,7 @@ namespace Qunity
         {
             Vector3 uAxis = face.uvValve.U.axis.normalized;
             Vector3 vAxis = face.uvValve.V.axis.normalized;
-            float vSign = -Mathf.Sign(Vector3.Dot(Vector3.Cross(face.planeNormal, uAxis), vAxis));
-
+            float vSign = Mathf.Sign(Vector3.Dot(Vector3.Cross(face.planeNormal, uAxis), vAxis));
             return new Vector4(uAxis.x, uAxis.y, uAxis.z, vSign);
         }
 
