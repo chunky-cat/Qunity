@@ -50,9 +50,17 @@ namespace Qunity
 
         public LmpPalette palette;
 
+        [Header("Export")]
+        public string folder = "Assets/textures";
+        [Space(10)]
+        [InspectorButton("ExportTextures")]
+        public bool exportTextures;
+
         private const int TEXTURE_NAME_LENGTH = 16;
         private const int MAX_MIP_LEVELS = 4;
 
+        [HideInInspector]
+        public WadTexture2DCollection collection;
 
 
         public override void OnImportAsset(AssetImportContext ctx)
@@ -146,12 +154,26 @@ namespace Qunity
 
                 ctx.AddObjectToAsset("collection", wadCollection);
                 ctx.SetMainObject(wadCollection);
+                collection = wadCollection;
             }
             catch (Exception e)
             {
                 br.Close();
                 Debug.LogException(e);
                 throw e.InnerException;
+            }
+        }
+
+        public void ExportTextures()
+        {
+            folder = folder.Trim('/').TrimEnd('\\');
+            Directory.CreateDirectory(folder);
+            foreach (var tex in collection.textures)
+            {
+                var fullPath = folder + "/" + tex.name + ".png";
+                fullPath = fullPath.Replace("*", "").Replace("+", "");
+                byte[] _bytes = tex.EncodeToPNG();
+                File.WriteAllBytes(fullPath, _bytes);
             }
         }
     }

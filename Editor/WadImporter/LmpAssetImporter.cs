@@ -19,6 +19,7 @@ namespace Qunity
             {
                 BinaryReader br = new BinaryReader(s);
                 var pal = ScriptableObject.CreateInstance<LmpPalette>();
+                int i = 0;
                 while (br.BaseStream.Position != br.BaseStream.Length)
                 {
                     var r = br.ReadByte() / 255.0f;
@@ -26,6 +27,9 @@ namespace Qunity
                     var b = br.ReadByte() / 255.0f;
                     var color = new Color(r, g, b);
                     pal.colors.Add(color);
+                    if (i == 255) { pal.transparentColor = color; }
+                    if (i >= 240 && i < 255) { pal.brightColors.Add(color); }
+                    i++;
                 }
                 br.Close();
                 ctx.AddObjectToAsset("Palette", pal);

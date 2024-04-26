@@ -4,7 +4,6 @@ namespace Qunity
 {
     public class EntityPropertyReceiver : MonoBehaviour
     {
-
         static public bool ToVector3(string val, out Vector3 vec3)
         {
             var vals = val.Split(" ");

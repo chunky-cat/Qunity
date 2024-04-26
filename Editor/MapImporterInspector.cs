@@ -1,9 +1,10 @@
 using UnityEngine;
 using UnityEditor;
 using Qunity;
+using UnityEditor.AssetImporters;
 
 [CustomEditor(typeof(QuakeMapAssetImporter))]
-public class QuakeMapImporterInspector : Editor
+public class QuakeMapImporterInspector : ScriptedImporterEditor
 {
     public override void OnInspectorGUI()
     {
