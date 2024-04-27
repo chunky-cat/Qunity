@@ -90,6 +90,12 @@ namespace Qunity
                 evbus.test = c.targetName;
                 evbus.AddEvent(c.targetName, c.OnTrigger);
             }
+
+            foreach (var c in worldspawn.GetComponentsInChildren<EntityEventEmitter>())
+            {
+                c.SetLocalEventBus(evbus);
+            }
+
             return;
         }
     }

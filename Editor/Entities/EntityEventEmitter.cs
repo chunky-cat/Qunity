@@ -7,16 +7,23 @@ public class EntityEventEmitter : MonoBehaviour
     public bool once;
     protected bool triggered = false;
 
+    [SerializeField] protected QunityEventBus localEventBus;
+
     public void SetTarget(string targetName)
     {
         target = targetName;
+    }
+
+    public void SetLocalEventBus(QunityEventBus eb)
+    {
+        localEventBus = eb;
     }
 
     public virtual void TriggerEntered(Collider col)
     {
         if (target != "" && (!once || !triggered))
         {
-            QunityEventBus.GetInstance().FireEvent(target);
+            localEventBus.FireEvent(target);
         }
     }
 

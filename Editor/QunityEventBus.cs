@@ -17,23 +17,8 @@ public class QunityEventEntry
 
 public class QunityEventBus : MonoBehaviour
 {
-    static QunityEventBus instance;
     public string test;
     public List<QunityEventEntry> eventList = new List<QunityEventEntry>();
-    private void Awake()
-    {
-        if (instance != null && instance != this)
-        {
-            Destroy(instance);
-        }
-        instance = this;
-    }
-
-    static public QunityEventBus GetInstance()
-    {
-        return instance;
-    }
-
     public void AddEvent(string targetName, UnityAction cb)
     {
         var ev = findEvent(targetName);
