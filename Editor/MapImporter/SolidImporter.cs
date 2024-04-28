@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Qunity;
 using UnityEditor;
 using UnityEngine;
 
-namespace Quinity
+namespace Qunity
 {
     [System.Serializable]
     public class SolidImporter : BaseEntityImporter
