@@ -314,13 +314,13 @@ namespace Qunity
                                     currentFace.uvValve.V.axis.x = (float)Convert.ToDouble(token, System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
                                     break;
                                 case 1:
-                                    currentFace.uvValve.V.axis.y = -(float)Convert.ToDouble(token, System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
+                                    currentFace.uvValve.V.axis.y = (float)Convert.ToDouble(token, System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
                                     break;
                                 case 2:
-                                    currentFace.uvValve.V.axis.z = -(float)Convert.ToDouble(token, System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
+                                    currentFace.uvValve.V.axis.z = (float)Convert.ToDouble(token, System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
                                     break;
                                 case 3:
-                                    currentFace.uvValve.V.offset = -(float)Convert.ToDouble(token, System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
+                                    currentFace.uvValve.V.offset = (float)Convert.ToDouble(token, System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
                                     break;
                             }
 
@@ -330,7 +330,7 @@ namespace Qunity
 
                     break;
                 case ParseScope.ROT:
-                    currentFace.uvExtra.rot = -(float)Convert.ToDouble(token, System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
+                    currentFace.uvExtra.rot = (float)Convert.ToDouble(token, System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
                     scope = ParseScope.U_SCALE;
                     break;
                 case ParseScope.U_SCALE:

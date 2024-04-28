@@ -228,7 +228,7 @@ namespace Quinity
                         vertices[i] = new Vector3(-v.vertex.y, v.vertex.z, v.vertex.x) / inverseScale;
                         normals[i] = new Vector3(-v.normal.y, v.normal.z, v.normal.x);
                         tangents[i] = v.tangent;
-                        uvs[i] = new Vector2(v.uv.x, v.uv.y);
+                        uvs[i] = new Vector2(v.uv.x, -v.uv.y);
                     }
 
                     int[] indices = new int[surfsSpan[s].indices.Count];
