@@ -3,7 +3,7 @@ using Qunity;
 using UnityEditor.AssetImporters;
 using UnityEngine;
 
-namespace Quinity
+namespace Qunity
 {
     using EntityCallback = System.Action<GameObject, int>;
     public class BaseEntityImporter

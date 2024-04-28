@@ -2,7 +2,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace Quinity
+namespace Qunity
 {
     public class QPathTools
     {
