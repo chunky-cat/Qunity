@@ -1,11 +1,8 @@
 using UnityEditor.AssetImporters;
-using UnityEditor;
 using UnityEngine;
 using System.Collections.Generic;
-using System;
-using UnityEngine.Rendering;
-using System.Linq;
 using Quinity;
+using System.IO;
 
 namespace Qunity
 {
@@ -15,13 +12,16 @@ namespace Qunity
     [ScriptedImporter(1, "map", AllowCaching = true)]
     public sealed class QuakeMapAssetImporter : ScriptedImporter
     {
-        const string internalMatFolder = "Packages/com.chunkycat.qunity/Assets/Materials/";
         private MapData mapData;
         private MapParser mapParser;
-        private Dictionary<string, Material> m_materialDict = new Dictionary<string, Material>();
 
         [Header("General")]
         public float inverseScale = 16;
+
+        public string extractPath = "Assets/textures";
+
+        [InspectorButton("ExtractFromWAD")]
+        public bool extractFromWAD;
 
         [Header("Entities")]
         public SolidImporter solidImporter = new SolidImporter();
@@ -31,7 +31,8 @@ namespace Qunity
         [HideInInspector]
         public bool warnTexturesMissing;
 
-
+        [HideInInspector]
+        public string mapPath;
 
         public QuakeMapAssetImporter()
         {
@@ -45,7 +46,7 @@ namespace Qunity
             {
                 return;
             }
-
+            mapPath = ctx.assetPath;
             mapParser.Load(ctx.assetPath);
             GameObject worldspawn = null;
             solidImporter.inverseScale = inverseScale;
@@ -97,6 +98,21 @@ namespace Qunity
             }
 
             return;
+        }
+
+        public void ExtractFromWAD()
+        {
+            mapParser.Load(mapPath);
+            foreach (var qtex in mapData.textures)
+            {
+                var folder = extractPath.Trim('/').TrimEnd('\\');
+                Directory.CreateDirectory(folder);
+                var tex = solidImporter.FindTextureInWAD(mapData, qtex.name);
+                var fullPath = folder + "/" + tex.name + ".png";
+                fullPath = fullPath.Replace("*", "").Replace("+", "");
+                byte[] _bytes = tex.EncodeToPNG();
+                File.WriteAllBytes(fullPath, _bytes);
+            }
         }
     }
 }

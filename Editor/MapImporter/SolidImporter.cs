@@ -270,23 +270,25 @@ namespace Quinity
                     Texture2D emissionTex = new Texture2D(qtex.width, qtex.height, TextureFormat.RGB24, true);
                     Color[] blackPixels = Enumerable.Repeat(Color.black, qtex.width * qtex.height).ToArray();
                     emissionTex.SetPixels(blackPixels);
+
                     if (tex.isReadable)
                     {
                         for (int h = 0; h < tex.height; h++)
                         {
                             for (int w = 0; w < tex.width; w++)
                             {
-                                var c = tex.GetPixel(w, h);
+                                Color32 c = tex.GetPixel(w, h);
                                 if (palette.isTransparent(c))
                                 {
                                     hasTransparancy = true;
                                     c.a = 0;
                                     tex.SetPixel(w, h, c);
                                 }
-                                if (c.a == 0)
+                                else if (c.a == 0)
                                 {
                                     hasTransparancy = true;
                                 }
+
                                 if (palette.isBrightColor(c))
                                 {
                                     emissionTex.SetPixel(w, h, c);
@@ -343,10 +345,22 @@ namespace Quinity
         #region Material Stuff
         private Texture2D findTexture(string texName)
         {
-            var baseDir = "Assets";
-            if (mapData.entities[0].properties.ContainsKey("wad"))
+            var tex = FindTextureInWAD(mapData, texName);
+            if (tex != null)
             {
-                var wads = mapData.entities[0].properties["wad"].Split(';');
+                return tex;
+            }
+            var path = QPathTools.GetTextureAssetPath(texName, textureFolder);
+            return (Texture2D)AssetDatabase.LoadAssetAtPath(path, typeof(Texture2D));
+        }
+
+        public Texture2D FindTextureInWAD(MapData md, string texName)
+        {
+            var baseDir = "Assets";
+            if (md.entities[0].properties.ContainsKey("wad"))
+            {
+                var wads = md.entities[0].properties["wad"].Split(';');
+
                 foreach (var wpath in wads)
                 {
                     var currentBasedir = wadFolder;
@@ -355,11 +369,9 @@ namespace Quinity
                         currentBasedir = baseDir;
                     }
 
-
                     WadTexture2DCollection wad = (WadTexture2DCollection)AssetDatabase.LoadAssetAtPath(currentBasedir + "/" + wpath, typeof(WadTexture2DCollection));
                     if (wad == null)
                     {
-                        Debug.LogError("could not open wad: " + currentBasedir + "/" + wpath);
                         continue;
                     }
                     var tex = wad.FindTexture(texName);
@@ -368,10 +380,8 @@ namespace Quinity
                         return tex;
                     }
                 }
-                return null;
             }
-            var path = QPathTools.GetTextureAssetPath(texName, textureFolder);
-            return (Texture2D)AssetDatabase.LoadAssetAtPath(path, typeof(Texture2D));
+            return null;
         }
 
         private void setupBaseMaterials()

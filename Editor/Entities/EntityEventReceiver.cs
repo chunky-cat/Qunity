@@ -2,11 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EntityEventReceiver : MonoBehaviour
+namespace Qunity
 {
-    public string targetName;
-    public void OnTrigger()
+
+    public class EntityEventReceiver : MonoBehaviour
     {
-        Debug.Log(targetName + " got triggered");
+        public string targetName;
+        public virtual void OnTrigger()
+        {
+            Debug.Log(targetName + " got triggered");
+        }
     }
 }

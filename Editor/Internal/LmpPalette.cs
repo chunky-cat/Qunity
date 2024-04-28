@@ -8,12 +8,12 @@ public class LmpPalette : ScriptableObject
     public List<Color> brightColors = new List<Color>();
     public Color transparentColor;
 
-    public bool isTransparent(Color c) { return c == transparentColor; }
-    public bool isBrightColor(Color c)
+    public bool isTransparent(Color32 c) { return c == transparentColor; }
+    public bool isBrightColor(Color32 c)
     {
         foreach (var bc in brightColors)
         {
-            if (bc == c) return true;
+            if (c == bc) return true;
         }
         return false;
     }
