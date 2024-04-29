@@ -257,7 +257,7 @@ namespace Qunity
                     continue;
                 }
 
-                var tex = findTexture(qtex.name);
+                var tex = FindTexture(mapData, qtex.name);
                 if (tex != null)
                 {
                     qtex.width = tex.width;
@@ -341,9 +341,9 @@ namespace Qunity
 
         #endregion
         #region Material Stuff
-        private Texture2D findTexture(string texName)
+        public Texture2D FindTexture(MapData md, string texName)
         {
-            var tex = FindTextureInWAD(mapData, texName);
+            var tex = FindTextureInWAD(md, texName);
             if (tex != null)
             {
                 return tex;
