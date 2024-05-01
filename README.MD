@@ -35,7 +35,7 @@ you can install it via Unity's [package manager via gitURL](https://docs.unity3d
 ```
 https://github.com/chunky-cat/com.chunkycat.qunity.git
 ```
-<br>
+
 [Read the Docs](https://chunky-cat.github.io/qunity_docs/) for more instructions :-)
 
 ## Credits
