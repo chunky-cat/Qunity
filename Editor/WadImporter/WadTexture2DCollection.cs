@@ -12,7 +12,7 @@ public class WadTexture2DCollection : ScriptableObject
     {
         foreach (var tex in textures)
         {
-            if (tex.name == name)
+            if (tex.name == name.ToLower())
             {
                 return tex;
             }

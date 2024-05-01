@@ -1,18 +1,25 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Collections;
 using UnityEditor;
 using UnityEngine;
 
 namespace Qunity
 {
+    [Serializable]
+    public class WadEntry
+    {
+        [ReadOnly] public string name;
+        public WadTexture2DCollection wad;
+    }
+
     [System.Serializable]
     public class SolidImporter : BaseEntityImporter
     {
         public enum WarnType { MissingTexture, ReimportTexture };
 
         const string WORLDSPAWNCLASS = "worldspawn";
-        const string PKGPATH = "Packages/com.chunkycat.qunity/";
 
         [Header("Lightmap Settings")]
         public float lightmapTexelSize = 1;
@@ -24,9 +31,9 @@ namespace Qunity
         public string skipTextureName = "skip";
 
         [Space(5)]
-        public string wadFolder = "Assets/wads";
         public string textureFolder = "Assets/textures";
         public LmpPalette palette;
+        public List<WadEntry> wadFiles = new List<WadEntry>();
 
         [Space(5)]
         [Header("Materials Overrides")]
@@ -39,11 +46,6 @@ namespace Qunity
         public GameObject defaultSolidPrefab;
         public GameObject defaultTriggerPrefab;
         public List<SolidEntity> solidEntities = new List<SolidEntity>();
-
-
-        [HideInInspector]
-        public float inverseScale = 1;
-
         private Action<WarnType, bool> onWarnCallback;
 
         private Dictionary<string, Material> m_materialDict = new Dictionary<string, Material>();
@@ -64,18 +66,31 @@ namespace Qunity
             {
                 defaultTriggerPrefab = (GameObject)AssetDatabase.LoadAssetAtPath(PKGPATH + "Assets/Prefabs/SolidTrigger.prefab", typeof(GameObject));
             }
-            wadFolder = wadFolder.TrimEnd('/');
             textureFolder = textureFolder.TrimEnd('/');
+
+            if (mapData.entities[0].properties.ContainsKey("wad"))
+            {
+                var wads = mapData.entities[0].properties["wad"].Split(';');
+                foreach (var wpath in wads)
+                {
+                    WadTexture2DCollection wad = (WadTexture2DCollection)AssetDatabase.LoadAssetAtPath("Assets/" + wpath, typeof(WadTexture2DCollection));
+
+                    wadFiles.Add(new WadEntry { name = wpath, wad = wad });
+                }
+            }
+
 
             geoGenerator = new GeoGenerator(mapData);
             surfaceGatherer = new SurfaceGatherer(mapData);
             setupBaseMaterials();
             generateTextureMaterials();
+
             geoGenerator.Run();
             foreach (var matKey in m_materialDict.Keys)
             {
                 ctx.AddObjectToAsset(matKey, m_materialDict[matKey]);
             }
+
         }
 
         public void OnWarn(Action<WarnType, bool> cb)
@@ -182,9 +197,9 @@ namespace Qunity
             {
                 Unwrapping.GenerateSecondaryUVSet(mesh, uParam);
             }
-            catch
+            catch (Exception e)
             {
-
+                Debug.LogWarning(e);
             }
             ctx.AddObjectToAsset(mesh.name, mesh);
         }
@@ -236,6 +251,7 @@ namespace Qunity
                     }
 
                     var m = new Mesh();
+                    m.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
                     m.vertices = vertices;
                     m.uv = uvs;
                     m.normals = normals;
@@ -252,17 +268,20 @@ namespace Qunity
             for (int i = 0; i < mapData.textures.Count; i++)
             {
                 var qtex = mapData.textures[i];
-                if (m_materialDict.ContainsKey(qtex.name))
+                var qtexname = qtex.name;
+                if (m_materialDict.ContainsKey(qtexname))
                 {
                     continue;
                 }
 
-                var tex = FindTexture(mapData, qtex.name);
+                var tex = FindTexture(mapData, qtexname);
                 if (tex != null)
                 {
                     qtex.width = tex.width;
                     qtex.height = tex.height;
+
                     tex.filterMode = FilterMode.Point;
+
                     bool hasTransparancy = false;
                     bool hasBright = false;
                     Texture2D emissionTex = new Texture2D(qtex.width, qtex.height, TextureFormat.RGB24, true);
@@ -299,8 +318,8 @@ namespace Qunity
                     else
                     {
                         warn(WarnType.ReimportTexture, true);
-                        var path = QPathTools.GetTextureAssetPath(qtex.name, textureFolder);
-                        Debug.Log("reimporting texture: " + path + "; please reimport map");
+                        var path = QPathTools.GetTextureAssetPath(qtexname, textureFolder);
+                        Debug.LogWarning("reimporting texture: " + path + "; please reimport map");
                         TextureProcessor.ReimportTexture(path);
                     }
 
@@ -312,12 +331,12 @@ namespace Qunity
                     }
 
                     var newMat = new Material(mat);
-                    m_materialDict[qtex.name] = newMat;
+                    m_materialDict[qtexname] = newMat;
                     newMat.SetTexture(BaseColorShaderParam, tex);
-                    newMat.name = qtex.name;
+                    newMat.name = qtexname;
                     if (hasBright)
                     {
-                        emissionTex.name = qtex.name + "_em";
+                        emissionTex.name = qtexname + "_em";
                         emissionTex.filterMode = FilterMode.Point;
                         emissionTex.Apply();
                         ctx.AddObjectToAsset(emissionTex.name + "_em", emissionTex);
@@ -329,10 +348,10 @@ namespace Qunity
                 else
                 {
                     var newMat = new Material(defaultSolid);
-                    m_materialDict[qtex.name] = newMat;
+                    m_materialDict[qtexname] = newMat;
                     warn(WarnType.MissingTexture, true);
-                    Debug.LogError("cannot find texture: " + qtex.name);
-                    return;
+                    Debug.LogWarning("cannot find texture: " + qtexname);
+                    continue;
                 }
 
                 mapData.textures[i] = qtex;
@@ -354,28 +373,17 @@ namespace Qunity
 
         public Texture2D FindTextureInWAD(MapData md, string texName)
         {
-            var baseDir = "Assets";
             if (md.entities[0].properties.ContainsKey("wad"))
             {
-                var wads = md.entities[0].properties["wad"].Split(';');
-
-                foreach (var wpath in wads)
+                foreach (var entry in wadFiles)
                 {
-                    var currentBasedir = wadFolder;
-                    if (wpath.Contains("/"))
+                    if (entry.wad != null)
                     {
-                        currentBasedir = baseDir;
-                    }
-
-                    WadTexture2DCollection wad = (WadTexture2DCollection)AssetDatabase.LoadAssetAtPath(currentBasedir + "/" + wpath, typeof(WadTexture2DCollection));
-                    if (wad == null)
-                    {
-                        continue;
-                    }
-                    var tex = wad.FindTexture(texName);
-                    if (tex != null)
-                    {
-                        return tex;
+                        var tex = entry.wad.FindTexture(texName);
+                        if (tex != null)
+                        {
+                            return tex;
+                        }
                     }
                 }
             }

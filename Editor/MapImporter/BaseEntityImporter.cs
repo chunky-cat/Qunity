@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Qunity;
 using UnityEditor.AssetImporters;
 using UnityEngine;
 
@@ -8,9 +7,13 @@ namespace Qunity
     using EntityCallback = System.Action<GameObject, int>;
     public class BaseEntityImporter
     {
+        protected const string PKGPATH = "Packages/com.chunkycat.qunity/";
+
         protected Dictionary<string, int> classCount = new Dictionary<string, int>();
         protected MapData mapData;
         protected AssetImportContext ctx;
+        [HideInInspector]
+        public float inverseScale = 16;
 
         public void ParseEntities(AssetImportContext ctx, MapData mapData, EntityCallback cb)
         {

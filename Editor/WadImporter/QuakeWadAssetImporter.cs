@@ -4,6 +4,7 @@ using UnityEditor;
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Qunity
 {
@@ -133,17 +134,17 @@ namespace Qunity
                     var pixelsRgb = new Color32[tex.width * tex.height];
 
                     int k = 0;
-                    for (int h = (int)tex.height - 1; h >= 0; h--)
+                    int w = 0;
+                    int h = (int)tex.height - 1;
+                    for (int idx = tex.pixelData.Length - 1; idx >= 0; idx--)
                     {
-                        for (int w = 0; w < tex.width; w++)
+                        var rgbColor = palette.colors[tex.pixelData[w + (h * tex.width)]];
+                        pixelsRgb[k] = rgbColor;
+                        k++; w++;
+                        if (w == tex.width)
                         {
-                            var rgbColor = Color.black;
-                            if (tex.pixelData.Length > (w + (h * tex.height)))
-                            {
-                                rgbColor = palette.colors[tex.pixelData[w + (h * tex.height)]];
-                            }
-                            pixelsRgb[k] = rgbColor;
-                            k++;
+                            w = 0;
+                            h--;
                         }
                     }
 
