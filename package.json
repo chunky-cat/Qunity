@@ -1,6 +1,6 @@
 {
   "name": "com.chunkycat.qunity",
-  "version": "1.0.5-experimental",
+  "version": "1.0.6",
   "displayName": "Qunity",
   "description": "Quake (Trenchbroom) map tools",
   "unity": "2021.1",
