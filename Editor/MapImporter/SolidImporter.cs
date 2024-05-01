@@ -73,9 +73,13 @@ namespace Qunity
                 var wads = mapData.entities[0].properties["wad"].Split(';');
                 foreach (var wpath in wads)
                 {
-                    WadTexture2DCollection wad = (WadTexture2DCollection)AssetDatabase.LoadAssetAtPath("Assets/" + wpath, typeof(WadTexture2DCollection));
-
-                    wadFiles.Add(new WadEntry { name = wpath, wad = wad });
+                    bool alreadyInList = false;
+                    foreach (var we in wadFiles) { if (we.name == wpath) alreadyInList = true; }
+                    if (!alreadyInList)
+                    {
+                        WadTexture2DCollection wad = (WadTexture2DCollection)AssetDatabase.LoadAssetAtPath("Assets/" + wpath, typeof(WadTexture2DCollection));
+                        wadFiles.Add(new WadEntry { name = wpath, wad = wad });
+                    }
                 }
             }
 
@@ -90,7 +94,6 @@ namespace Qunity
             {
                 ctx.AddObjectToAsset(matKey, m_materialDict[matKey]);
             }
-
         }
 
         public void OnWarn(Action<WarnType, bool> cb)

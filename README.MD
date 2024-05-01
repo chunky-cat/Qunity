@@ -1,9 +1,9 @@
-![QUNITY](https://github.com/chunky-cat/com.chunkycat.qunity/blob/main/.docs/_media/logo.png?raw=true)
+![QUNITY](https://raw.githubusercontent.com/chunky-cat/qunity_docs/main/_media/logo.png?raw=true)
 
 # Qunity
 ## quake map importer for Unity based on [Qodot / FuncGodot](https://github.com/func-godot/func_godot_plugin)
 <p align="center">
-<img src="https://github.com/chunky-cat/com.chunkycat.qunity/blob/main/.docs/_media/demo.gif?raw=true" alt="tb new" width="60%" height=60%/>
+<img src="https://raw.githubusercontent.com/chunky-cat/qunity_docs/main/_media/demo.gif?raw=true" alt="tb new" width="60%" height=60%/>
 </p>
 
 Supported Unity Versions:
@@ -35,20 +35,8 @@ you can install it via Unity's [package manager via gitURL](https://docs.unity3d
 ```
 https://github.com/chunky-cat/com.chunkycat.qunity.git
 ```
-
-
-#### Setup Trenchbroom for Qunity:
-
-* click on `open preferences...` and set the game path for `Generic` to the `Assets` folder of your Unity Project.
-* Create a new `Generic` map and use the `Valve` format (Standard should also work tho).
 <br>
-<img src="https://github.com/chunky-cat/com.chunkycat.qunity/blob/main/.docs/_media/trenchbroom/tb_prefs.png?raw=true" alt="tb new" width="60%" height=60%/>
-<br>
-
-the default `Generic` gameconfig searches for a folder named `textures` in the game path (your Assets folder).
-Place all your mapping textures in there to make them available in Trenchbroom. This is also the default folder Qunity will use to create materials.
-
-
+[Read the Docs](https://chunky-cat.github.io/qunity_docs/) for more instructions :-)
 
 ## Credits
 

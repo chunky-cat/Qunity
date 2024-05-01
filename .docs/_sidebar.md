@@ -1,2 +1,0 @@
-- [Quickstart](/)
-- [Importing](importing.md)
