@@ -360,7 +360,7 @@ namespace Qunity
                         if (overrideMat == null)
                         {
                             newMat.SetColor("_EmissionColor", Color.white);
-                            newMat.SetTexture("_EmissionMap", tex);
+                            newMat.SetTexture("_EmissionMap", emissionTex);
                         }
                     }
                 }
