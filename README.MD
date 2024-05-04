@@ -44,9 +44,9 @@ if you don't have git installed in your `PATH` environment, you can also downloa
 <br>
 <br>
 
-<img src="https://github.com/chunky-cat/Qunity/blob/main/media/screens/screen_1?raw=true" alt="screen_1" width="30%" height=30%/>
-<img src="https://github.com/chunky-cat/Qunity/blob/main/media/screens/screen_2?raw=true" alt="screen_2" width="30%" height=30%/>
-<img src="https://github.com/chunky-cat/Qunity/blob/main/media/screens/screen_3?raw=true" alt="screen_3" width="30%" height=30%/>
+<img src="https://github.com/chunky-cat/Qunity/blob/main/media/screens/screen_1.png?raw=true" alt="screen_1" width="30%" height=30%/>
+<img src="https://github.com/chunky-cat/Qunity/blob/main/media/screens/screen_2.png?raw=true" alt="screen_2" width="30%" height=30%/>
+<img src="https://github.com/chunky-cat/Qunity/blob/main/media/screens/screen_3.png?raw=true" alt="screen_3" width="30%" height=30%/>
 
 <br>
 <br>
