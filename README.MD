@@ -1,9 +1,9 @@
-![QUNITY](https://raw.githubusercontent.com/chunky-cat/qunity_docs/main/_media/logo.png?raw=true)
+![QUNITY](https://github.com/chunky-cat/Qunity/blob/main/media/logo.png?raw=true)
 
 # Qunity
 ## quake map importer for Unity based on [Qodot / FuncGodot](https://github.com/func-godot/func_godot_plugin)
 <p align="center">
-<img src="https://raw.githubusercontent.com/chunky-cat/qunity_docs/main/_media/demo.gif?raw=true" alt="tb new" width="60%" height=60%/>
+<img src="https://github.com/chunky-cat/Qunity/blob/main/media/demo.gif?raw=true" alt="tb new" width="60%" height=60%/>
 </p>
 
 Supported Unity Versions:
@@ -31,12 +31,18 @@ Please file an issue if you run into problems. :-)
 
 #### How to install:
 
-you can install it via Unity's [package manager via gitURL](https://docs.unity3d.com/Manual/upm-ui-giturl.html):
 ```
-https://github.com/chunky-cat/com.chunkycat.qunity.git
+https://github.com/chunky-cat/Qunity.git?path=/com.chunkycat.qunity
 ```
 
-[Read the Docs](https://chunky-cat.github.io/qunity_docs/) for more instructions :-)
+if you don't have git installed in your `PATH` environment, you can also download the package via github and install it as a local package.
+
+---
+
+[Read the Wiki](https://github.com/chunky-cat/Qunity/wiki) for more informations :-)
+
+<br>
+<br>
 
 ## Credits
 
