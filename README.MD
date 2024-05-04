@@ -37,6 +37,25 @@ https://github.com/chunky-cat/Qunity.git?path=/com.chunkycat.qunity
 
 if you don't have git installed in your `PATH` environment, you can also download the package via github and install it as a local package.
 
+Alternatively, merge the snippet to Packages/manifest.json 
+
+```json
+{
+    "scopedRegistries": [
+        {
+            "name": "package.openupm.com",
+            "url": "https://package.openupm.com",
+            "scopes": [
+                "com.chunkycat.qunity"
+            ]
+        }
+    ],
+    "dependencies": {
+        "com.chunkycat.qunity": "1.0.7-preview-1"
+    }
+}
+```
+
 ---
 
 [Read the Wiki](https://github.com/chunky-cat/Qunity/wiki) for more informations :-)
