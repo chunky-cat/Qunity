@@ -1,0 +1,21 @@
+{
+  "name": "com.chunkycat.qunity",
+  "version": "1.0.7-preview-1",
+  "displayName": "Qunity",
+  "description": "Quake (Trenchbroom) map tools",
+  "unity": "2021.1",
+  "unityRelease": "0b5",
+  "documentationUrl": "https://example.com/",
+  "changelogUrl": "https://example.com/changelog.html",
+  "licensesUrl": "https://example.com/licensing.html",
+  "keywords": [
+    "quake",
+    "trenchbroom",
+    "leveldesign"
+  ],
+  "author": {
+    "name": "Chunky Cat",
+    "email": "t.goehlert@gmail.com",
+    "url": "https://www.unity3d.com"
+  }
+}

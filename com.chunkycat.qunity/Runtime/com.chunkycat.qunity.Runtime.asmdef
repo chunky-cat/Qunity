@@ -1,0 +1,16 @@
+{
+    "name": "ChunkyCat.Qunity",
+    "rootNamespace": "",
+    "references": [
+        "chunkycat.qunity.Editor"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
