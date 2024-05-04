@@ -39,6 +39,7 @@ namespace Qunity
         [Header("Materials Overrides")]
         public Material defaultSolid;
         public Material alphaCutout;
+        public string materialOverrideFolder = "Assets/Materials";
         public string BaseColorShaderParam = "_MainTex";
 
         [Space(5)]
@@ -332,10 +333,22 @@ namespace Qunity
                     {
                         mat = alphaCutout;
                     }
+                    
+                    var overrideMat = (Material)AssetDatabase.LoadAssetAtPath(materialOverrideFolder+"/"+qtexname.ToLower()+".mat", typeof(Material));
+                    Debug.LogFormat("search override {0}", materialOverrideFolder+"/"+qtexname.ToLower());
+                    if (overrideMat != null)
+                    {
+                        Debug.LogFormat("found override {0}", overrideMat);
+                        mat = overrideMat;
+                    }
 
                     var newMat = new Material(mat);
                     m_materialDict[qtexname] = newMat;
-                    newMat.SetTexture(BaseColorShaderParam, tex);
+                    if (newMat.GetTexture(BaseColorShaderParam) == null)
+                    {
+                        newMat.SetTexture(BaseColorShaderParam, tex);
+                    }
+
                     newMat.name = qtexname;
                     if (hasBright)
                     {
@@ -344,8 +357,11 @@ namespace Qunity
                         emissionTex.Apply();
                         ctx.AddObjectToAsset(emissionTex.name + "_em", emissionTex);
                         newMat.globalIlluminationFlags = MaterialGlobalIlluminationFlags.AnyEmissive;
-                        newMat.SetColor("_EmissionColor", Color.white);
-                        newMat.SetTexture("_EmissionMap", emissionTex);
+                        if (overrideMat == null)
+                        {
+                            newMat.SetColor("_EmissionColor", Color.white);
+                            newMat.SetTexture("_EmissionMap", tex);
+                        }
                     }
                 }
                 else

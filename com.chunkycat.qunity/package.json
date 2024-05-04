@@ -5,17 +5,16 @@
   "description": "Quake (Trenchbroom) map tools",
   "unity": "2021.1",
   "unityRelease": "0b5",
-  "documentationUrl": "https://example.com/",
-  "changelogUrl": "https://example.com/changelog.html",
-  "licensesUrl": "https://example.com/licensing.html",
+  "documentationUrl": "https://github.com/chunky-cat/Qunity/wiki",
+  "licensesUrl": "https://github.com/chunky-cat/Qunity/blob/main/LICENSE",
   "keywords": [
     "quake",
     "trenchbroom",
     "leveldesign"
   ],
   "author": {
-    "name": "Chunky Cat",
+    "name": "Tino (Chunky Cat) Goehlert",
     "email": "t.goehlert@gmail.com",
-    "url": "https://www.unity3d.com"
+    "url": "https://github.com/chunky-cat"
   }
 }
