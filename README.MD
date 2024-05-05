@@ -1,4 +1,4 @@
-![QUNITY](https://github.com/chunky-cat/Qunity/blob/main/media/banner.png?raw=true)
+![QUNITY](https://github.com/chunky-cat/Qunity/blob/main/media/header_01.png?raw=true)
 
 # Qunity
 ## quake map importer for Unity based on [Qodot / FuncGodot](https://github.com/func-godot/func_godot_plugin)
