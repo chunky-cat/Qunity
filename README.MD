@@ -31,6 +31,8 @@ Please file an issue if you run into problems. :-)
 
 #### How to install:
 
+you can install it via Unity's [package manager via gitURL](https://docs.unity3d.com/Manual/upm-ui-giturl.html):
+
 ```
 https://github.com/chunky-cat/Qunity.git?path=/com.chunkycat.qunity
 ```
