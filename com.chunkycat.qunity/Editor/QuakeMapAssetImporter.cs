@@ -3,6 +3,8 @@ using UnityEngine;
 using System.IO;
 using System;
 using UnityEditor;
+using UnityEngine.Events;
+using UnityEditor.Events;
 
 namespace Qunity
 {
@@ -89,7 +91,7 @@ namespace Qunity
             var evbus = worldspawn.AddComponent<QunityEventBus>();
             foreach (var c in worldspawn.GetComponentsInChildren<EntityEventReceiver>())
             {
-                evbus.AddEvent(c.targetName, c.OnTrigger);
+                AddEventToBus(ref evbus, c.targetName, c.OnTrigger);
             }
 
             foreach (var c in worldspawn.GetComponentsInChildren<EntityEventEmitter>())
@@ -100,6 +102,19 @@ namespace Qunity
             var endTime = DateTime.Now;
             Debug.LogFormat("import time: {0}", (endTime - startTime).TotalSeconds);
             return;
+        }
+
+        private void AddEventToBus(ref QunityEventBus evbus, string targetName, UnityAction cb)
+        {
+            var ev = evbus.FindEvent(targetName);
+            if (ev == null)
+            {
+                var uev = new QunityEventEntry(targetName);
+                evbus.eventList.Add(uev);
+                UnityEventTools.AddVoidPersistentListener(uev.unityEvent, cb);
+                return;
+            }
+            UnityEventTools.AddVoidPersistentListener(ev, cb);
         }
 
         public void ExtractFromWAD()

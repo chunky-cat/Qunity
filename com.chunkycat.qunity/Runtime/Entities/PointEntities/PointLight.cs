@@ -1,4 +1,5 @@
 using UnityEngine;
+using Unity;
 
 namespace Qunity
 {
@@ -13,7 +14,8 @@ namespace Qunity
             var invScale = inverseScale == 0 ? 1 : inverseScale / 16;
             var light = GetComponent<Light>();
             light.type = LightType.Point;
-            light.lightmapBakeType = LightmapBakeType.Baked;
+            // TODO: does not build somehow
+            //light.lightmapBakeType = LightmapBakeType.Baked;
             switch (name)
             {
                 case "light":
@@ -25,7 +27,7 @@ namespace Qunity
                     {
                         var wait = float.Parse(value);
                         wait = wait == 0 ? 1 : wait;
-                        light.range = (defaultRange / (wait * 0.9f)) / invScale;
+                        light.range = defaultRange / (wait * 0.9f) / invScale;
                         break;
                     }
                 case "_color":
