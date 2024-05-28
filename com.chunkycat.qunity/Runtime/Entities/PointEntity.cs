@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEditor;
 
 namespace Qunity
 {
@@ -10,10 +9,8 @@ namespace Qunity
         public string className;
         public GameObject prefab;
 
-        public GameObject SetupPrefab(Entity ent, float inverseScale)
+        public void SetupPrefab(GameObject go, Entity ent, float inverseScale)
         {
-            if (prefab == null) { return null; }
-            var go = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
             var parser = go.GetComponent<EntityPropertyReceiver>();
             if (parser != null) parser.inverseScale = inverseScale;
 
@@ -26,7 +23,7 @@ namespace Qunity
                 if (prop.Key != "classname" && parser != null) parser.OnProperty(prop.Key, prop.Value);
             }
 
-            return go;
+            return;
         }
 
         private void parseOrigin(GameObject go, string value)

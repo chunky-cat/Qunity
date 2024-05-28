@@ -18,10 +18,14 @@ namespace Qunity
             var pe = getPeForClass(classname);
             if (pe != null)
             {
-                var go = pe.SetupPrefab(ent, inverseScale);
-                go.name = entName;
-                ctx.AddObjectToAsset(go.name, go);
-                return go;
+                if (pe.prefab != null)
+                {
+                    var go = (GameObject)PrefabUtility.InstantiatePrefab(pe.prefab);
+                    pe.SetupPrefab(go, ent, inverseScale);
+                    go.name = entName;
+                    ctx.AddObjectToAsset(go.name, go);
+                    return go;
+                }
             }
             return null;
         }

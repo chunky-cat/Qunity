@@ -100,7 +100,9 @@ namespace Qunity
                     entry.type = br.ReadByte();
                     entry.compression = br.ReadByte();
                     entry.unknown = br.ReadUInt16();
-                    entry.nameStr = new string(br.ReadChars(TEXTURE_NAME_LENGTH));
+                    var result = br.ReadBytes(TEXTURE_NAME_LENGTH);
+                    entry.nameStr = System.Text.Encoding.Default.GetString(result);
+                    Debug.LogFormat("texname: {0}", entry.nameStr);
                     if (entry.type == (byte)WadEntryType.MipsTexture)
                     {
                         entries.Add(entry);

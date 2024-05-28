@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityEditor.Events;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -18,29 +17,18 @@ public class QunityEventEntry
 public class QunityEventBus : MonoBehaviour
 {
     public List<QunityEventEntry> eventList = new List<QunityEventEntry>();
-    public void AddEvent(string targetName, UnityAction cb)
-    {
-        var ev = findEvent(targetName);
-        if (ev == null)
-        {
-            var uev = new QunityEventEntry(targetName);
-            eventList.Add(uev);
-            UnityEventTools.AddVoidPersistentListener(uev.unityEvent, cb);
-            return;
-        }
-        UnityEventTools.AddVoidPersistentListener(ev, cb);
-    }
+
 
     public void FireEvent(string targetName)
     {
-        var ev = findEvent(targetName);
+        var ev = FindEvent(targetName);
         if (ev != null)
         {
             ev.Invoke();
         }
     }
 
-    private UnityEvent findEvent(string targetName)
+    public UnityEvent FindEvent(string targetName)
     {
         foreach (var ev in eventList)
         {

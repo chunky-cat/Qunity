@@ -114,9 +114,9 @@ namespace Qunity
 
             string entName = classname == WORLDSPAWNCLASS ? classname : string.Format("{0}_{1}", classname, classCount[classname]);
             var prefab = getPrefabForClass(classname);
-
-            var go = SolidEntity.SetupPrefab(ent, prefab);
+            var go = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
             if (go != null) {
+                SolidEntity.SetupPrefab(go, prefab);
                 go.name = entName;
                 loadMeshObject(go, idx);
                 ctx.AddObjectToAsset(go.name, go);
@@ -287,7 +287,8 @@ namespace Qunity
                     qtex.height = tex.height;
 
                     var mat = defaultSolid;
-                    var overrideMat = (Material)AssetDatabase.LoadAssetAtPath(materialOverrideFolder+"/"+qtexname.ToLower()+".mat", typeof(Material));
+                    var overrideMat = (Material)AssetDatabase.LoadAssetAtPath(materialOverrideFolder + "/" + qtexname.ToLower() + ".mat", typeof(Material));
+
                     if (overrideMat != null)
                     {
                         Debug.LogFormat("found override {0}", overrideMat);
