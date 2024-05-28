@@ -378,8 +378,8 @@ namespace Qunity
             uvOut.x /= texW;
             uvOut.y /= texH;
 
-            //uvOut.x /= face.uvExtra.scaleX;
-            //uvOut.y /= face.uvExtra.scaleY;
+            uvOut.x /= face.uvExtra.scaleX;
+            uvOut.y /= face.uvExtra.scaleY;
 
             uvOut.x += uShift / texW;
             uvOut.y += vShift / texH;

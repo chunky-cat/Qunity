@@ -17,7 +17,6 @@ public class QunityEventEntry
 
 public class QunityEventBus : MonoBehaviour
 {
-    public string test;
     public List<QunityEventEntry> eventList = new List<QunityEventEntry>();
     public void AddEvent(string targetName, UnityAction cb)
     {

@@ -116,17 +116,19 @@ namespace Qunity
             var prefab = getPrefabForClass(classname);
 
             var go = SolidEntity.SetupPrefab(ent, prefab);
-            go.name = entName;
-            loadMeshObject(go, idx);
-            ctx.AddObjectToAsset(go.name, go);
-            if (classname == WORLDSPAWNCLASS)
-            {
-                ctx.SetMainObject(go);
-                go.isStatic = true;
-            }
-            else
-            {
-                go.transform.position /= inverseScale;
+            if (go != null) {
+                go.name = entName;
+                loadMeshObject(go, idx);
+                ctx.AddObjectToAsset(go.name, go);
+                if (classname == WORLDSPAWNCLASS)
+                {
+                    ctx.SetMainObject(go);
+                    go.isStatic = true;
+                }
+                else
+                {
+                    go.transform.position /= inverseScale;
+                }
             }
             return go;
         }
@@ -169,7 +171,7 @@ namespace Qunity
 
             if (mr != null)
             {
-                mr.SetSharedMaterials(materialList);
+                mr.sharedMaterials = materialList.ToArray();
                 mr.scaleInLightmap = lightmapTexelSize / inverseScale;
             }
 
@@ -284,58 +286,8 @@ namespace Qunity
                     qtex.width = tex.width;
                     qtex.height = tex.height;
 
-                    tex.filterMode = FilterMode.Point;
-
-                    bool hasTransparancy = false;
-                    bool hasBright = false;
-                    Texture2D emissionTex = new Texture2D(qtex.width, qtex.height, TextureFormat.RGB24, true);
-                    Color[] blackPixels = Enumerable.Repeat(Color.black, qtex.width * qtex.height).ToArray();
-                    emissionTex.SetPixels(blackPixels);
-
-                    if (tex.isReadable)
-                    {
-                        for (int h = 0; h < tex.height; h++)
-                        {
-                            for (int w = 0; w < tex.width; w++)
-                            {
-                                Color32 c = tex.GetPixel(w, h);
-                                if (palette.isTransparent(c))
-                                {
-                                    hasTransparancy = true;
-                                    c.a = 0;
-                                    tex.SetPixel(w, h, c);
-                                }
-                                else if (c.a == 0)
-                                {
-                                    hasTransparancy = true;
-                                }
-
-                                if (palette.isBrightColor(c))
-                                {
-                                    emissionTex.SetPixel(w, h, c);
-                                    hasBright = true;
-                                }
-                            }
-                        }
-                        tex.Apply();
-                    }
-                    else
-                    {
-                        warn(WarnType.ReimportTexture, true);
-                        var path = QPathTools.GetTextureAssetPath(qtexname, textureFolder);
-                        Debug.LogWarning("reimporting texture: " + path + "; please reimport map");
-                        TextureProcessor.ReimportTexture(path);
-                    }
-
-
                     var mat = defaultSolid;
-                    if (hasTransparancy)
-                    {
-                        mat = alphaCutout;
-                    }
-                    
                     var overrideMat = (Material)AssetDatabase.LoadAssetAtPath(materialOverrideFolder+"/"+qtexname.ToLower()+".mat", typeof(Material));
-                    Debug.LogFormat("search override {0}", materialOverrideFolder+"/"+qtexname.ToLower());
                     if (overrideMat != null)
                     {
                         Debug.LogFormat("found override {0}", overrideMat);
@@ -350,19 +302,6 @@ namespace Qunity
                     }
 
                     newMat.name = qtexname;
-                    if (hasBright)
-                    {
-                        emissionTex.name = qtexname + "_em";
-                        emissionTex.filterMode = FilterMode.Point;
-                        emissionTex.Apply();
-                        ctx.AddObjectToAsset(emissionTex.name + "_em", emissionTex);
-                        newMat.globalIlluminationFlags = MaterialGlobalIlluminationFlags.AnyEmissive;
-                        if (overrideMat == null)
-                        {
-                            newMat.SetColor("_EmissionColor", Color.white);
-                            newMat.SetTexture("_EmissionMap", emissionTex);
-                        }
-                    }
                 }
                 else
                 {
