@@ -16,7 +16,6 @@ public class QunityEventEntry
 
 public class QunityEventBus : MonoBehaviour
 {
-    public string test;
     public List<QunityEventEntry> eventList = new List<QunityEventEntry>();
 
 
