@@ -116,7 +116,7 @@ namespace Qunity
             var prefab = getPrefabForClass(classname);
             var go = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
             if (go != null) {
-                SolidEntity.SetupPrefab(go, prefab);
+                SolidEntity.SetupPrefab(go, ent);
                 go.name = entName;
                 loadMeshObject(go, idx);
                 ctx.AddObjectToAsset(go.name, go);
